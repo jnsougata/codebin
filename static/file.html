@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Codebin</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="/assets/icon.png" type="image/x-icon">
+        <meta property="og:title" content="codebin">
+        <meta property="og:description" content="Edit & Share multiple scripts on the go">
+        <meta property="og:image" content="/assets/icon.png">
+        <meta property="og:url" content="https://codebin.deta.dev/">
+        <link rel="stylesheet" type="text/css" href="/styles/style.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    </head>
+    <body>
+        <div class="container">
+            <button id="save" style="display: none;"></button>
+            <header>
+                <p>
+                    <a href="https://github.com/jnsougata/codebin">codebin</a>
+                </p>
+                <div class="box">
+                    <button id="copy">
+                        <i class="fa-solid fa-copy"></i>
+                    </button>
+                </div>
+            </header>
+            <div class="editor">
+                <div class="sidebar"></div>
+                <div class="renderer" id="main"></div>
+            </div>
+            <footer>
+                <div class="box" style="justify-content: flex-start;">
+                    <div class="text" id="editor-theme"></div>
+                    <div class="text" id="editor-lock">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                </div>
+                <div class="box" style="justify-content: flex-end;">
+                    <div class="text" id="editor-mode"></div>
+                </div>
+            </footer>
+        </div>
+        <div class="toast">
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ace.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ext-language_tools.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ext-modelist.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ext-themelist.js"></script>
+        <script src="/scripts/file.js"></script>
+    </body>
+</html>
