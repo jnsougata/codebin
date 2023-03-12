@@ -44,7 +44,7 @@ function modeToLabel(mode) {
 }
 
 function updateLangMode(mode) {
-    editorModeElem.innerHTML = `<i class="fa-solid fa-code-commit"> ${modeToLabel(mode)}`;
+    editorModeElem.innerHTML = `<i class="fa-solid fa-code-commit"></i> ${modeToLabel(mode).toUpperCase()}`;
 }
 
 function generateRandomId() {

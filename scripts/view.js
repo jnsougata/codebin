@@ -18,7 +18,7 @@ function resolveIconSource(mode) {
 }
 
 function updateLangMode(mode) {
-    editorMode.innerHTML = `<i class="fa-solid fa-code-commit"> ${modeToLabel(mode)}`;
+    editorMode.innerHTML = `<i class="fa-solid fa-code-commit"></i> ${modeToLabel(mode).toUpperCase()}`;
 }
 
 function modeToIcon(mode) {
