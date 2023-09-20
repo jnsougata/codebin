@@ -1,5 +1,5 @@
 # Codebin
-A code editing & sharing utility on [Deta Cloud](https://deta.sh/)
+A code editing & sharing utility on [Deta Space](https://deta.space/)
 
 # Features
 - Syntax hilighting
