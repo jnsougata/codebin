@@ -1,5 +1,5 @@
 # Codebin
-A code editing & sharing utility on [Deta Space](https://deta.space/)
+A code editing & sharing utility on [Deta Space]([https://deta.space/](https://deta.space/discovery/@gyrooo/codebin)
 
 # Features
 - Syntax hilighting
