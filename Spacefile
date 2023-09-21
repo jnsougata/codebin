@@ -1,9 +1,24 @@
 v: 0
-icon: ./assets/icon.png
+icon: ./assets/app_icon.png
 micros:
   - name: backend
-    src: ./
-    engine: python3.9
+    src: .
+    engine: custom
     primary: true
+    commands:
+      - go get
+      - go build .
+    include:
+      - codebin
+      - assets/
+      - styles/
+      - scripts/
+      - modes/
+    run: ./codebin
+    dev: go run .
     public_routes:
-      - "/*"
+      - "/modes/*"
+      - "/assets/*"
+      - "/shared/*"
+      - "/styles/*"
+      - "/scripts/*"

@@ -24,19 +24,19 @@ editor.setTheme("ace/theme/one_dark");
 
 
 window.addEventListener("DOMContentLoaded", () => {
-    editorThemeElem.innerHTML = `<i class="fa-solid fa-palette"></i> One Dark`;
-    globalBinId = generateRandomId()
-    defaultId = generateRandomId()
-    let file = {
-        id: defaultId,
-        mode: 'ace/mode/text',
-        name: "untitled",
-        value: ""
-    }
-    let sidebarItem = newFile(file)
-    sidebar.appendChild(sidebarItem)
-    sidebarItem.click()
-    editorLinkElem.innerHTML = `<i class="fa-solid fa-paper-plane"></i> ${window.location.href + globalBinId}`;
+    globalBinId = window.location.pathname.split("/")[2]
+    editorThemeElem.innerHTML = `One Dark`;
+    editorLinkElem.innerHTML = `${window.location.origin}/shared/${globalBinId}`;
+    fetch(`/api/bin/${globalBinId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (!data) return console.error("No data returned from server")
+            data.forEach(file => {
+                let sidebarItem = newFile(file)
+                sidebar.appendChild(sidebarItem)
+            })
+            sidebar.firstElementChild.click()
+        })
 });
 
 function modeToLabel(mode) {
@@ -44,7 +44,7 @@ function modeToLabel(mode) {
 }
 
 function updateLangMode(mode) {
-    editorModeElem.innerHTML = `<i class="fa-solid fa-code-commit"></i> ${modeToLabel(mode).toUpperCase()}`;
+    editorModeElem.innerHTML = `${modeToLabel(mode).toUpperCase()}`;
 }
 
 function generateRandomId() {
@@ -58,7 +58,6 @@ function modeToIcon(mode) {
 let nameInputTimer = null;
 let previouslyClickedItem = null;
 function newFile(file) {
-    file.parent = globalBinId
     let sidebarItem = document.createElement("div")
     sidebarItem.className = "item"
     sidebarItem.id = `item-${file.id}`;
@@ -101,10 +100,11 @@ function newFile(file) {
         }, 1000)
     })
     let share = document.createElement("i")
-    share.className = "fa-solid fa-paper-plane"
+    share.className = "material-symbols-outlined"
+    share.innerHTML = "share"
     share.addEventListener("click", (e) => {
         e.stopPropagation()
-        navigator.clipboard.writeText(`${window.location.href}file/${file.id}`)
+        navigator.clipboard.writeText(`${window.location.origin}file/${file.id}`)
         showToast("File Link copied to clipboard", toastGreen)
     })
     sidebarItem.appendChild(icon)
@@ -133,10 +133,10 @@ saveButton.addEventListener("click", () => {
     let bodyString = JSON.stringify(globalContextFile)
     let encoder = new TextEncoder();
     if (encoder.encode(bodyString).length < maxFileSize) {
-        fetch(`/api/bins/${globalContextFile.id}`, {method: "POST", body: bodyString})
+        fetch(`/api/bin/${globalContextFile.id}`, {method: "PUT", body: bodyString})
         .then((response) => {
-            if (response.status == 200) {
-                editorStatusElem.style.display = "flex"
+            if (response.status == 207) {
+                editorStatusElem.style.display = "block"
             }
         })
     } else {
@@ -150,7 +150,8 @@ newButton.addEventListener("click", () => {
         id: generateRandomId(),
         mode: 'ace/mode/text',
         name: "untitled",
-        value: ""
+        value: "",
+        parent: globalBinId
     }
     let sidebarItem = newFile(file)
     sidebar.appendChild(sidebarItem)
@@ -169,7 +170,8 @@ function dropHandler(ev) {
                         id: generateRandomId(),
                         mode: modelist.getModeForPath(file.name).mode,
                         name: file.name,
-                        value: e.target.result
+                        value: e.target.result,
+                        parent: globalBinId
                     })
                     sidebar.appendChild(sidebarItem)
                     sidebarItem.click()
@@ -199,7 +201,6 @@ editorLinkElem.addEventListener("click", () => {
 let autosaveTimer = null;
 let editorTextInput = document.getElementsByClassName("ace_text-input")[0]
 editorTextInput.addEventListener("keydown", (e) => {
-    editorStatusElem.style.display = "none"
     if (autosaveTimer) {
         clearTimeout(autosaveTimer);
     }
@@ -219,14 +220,10 @@ document.addEventListener("keydown", function(e) {
 // handle delete button
 let trashButton = document.getElementById("trash")
 trashButton.addEventListener("click", () => {
-    if (globalContextFile.id != defaultId) {
-        let sidebarItem = document.getElementById(`item-${globalContextFile.id}`)
-        if (sidebarItem) {
-            sidebarItem.remove()
-            fetch(`/api/bins/${globalContextFile.id}`, {method: "DELETE"})
-        }
-    } else {
-        showToast("cannot delete default file", "red")
+    let sidebarItem = document.getElementById(`item-${globalContextFile.id}`)
+    if (sidebarItem) {
+        fetch(`/api/bin/${globalContextFile.id}`, {method: "DELETE"})
+        .then(() => { sidebarItem.remove() })
     }
 })
 
@@ -243,7 +240,8 @@ filesElement.addEventListener("change", () => {
             id: generateRandomId(),
             mode: mode,
             name: file.name,
-            value: e.target.result
+            value: e.target.result,
+            parent: globalBinId
         })
         sidebar.appendChild(sidebarItem)
         sidebarItem.click()
