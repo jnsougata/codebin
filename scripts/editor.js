@@ -13,6 +13,18 @@ const maxFileSize = 400 * 1024
 const primaryBlue = "#1c4ce4"
 const toastGreen = "#27ab5a"
 const toastRed = "#c32c59"
+const menu = document.querySelector("#menu")
+
+let sidebarHidden = false
+menu.addEventListener("click", () => {
+    if (sidebarHidden) {
+        sidebar.style.display = "flex"
+        sidebarHidden = false
+    } else {
+        sidebar.style.display = "none"
+        sidebarHidden = true
+    }
+})
 
 editor.setOptions({
     fontSize: "15pt",
@@ -63,10 +75,10 @@ function newFile(file) {
     sidebarItem.id = `item-${file.id}`;
     sidebarItem.addEventListener("click", () => {
         if (previouslyClickedItem) {
-            previouslyClickedItem.style.border = "none"
+            previouslyClickedItem.style.backgroundColor = `transparent`;
         }
         previouslyClickedItem = sidebarItem
-        previouslyClickedItem.style.backgroundColor = `1px solid rgba(245, 222, 179, 0.095)`
+        previouslyClickedItem.style.backgroundColor = `rgba(255, 255, 255, 0.075)`;
         globalContextFile = file
         editor.session.setMode(file.mode)
         updateLangMode(file.mode)

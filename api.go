@@ -66,7 +66,7 @@ func bins(c *gin.Context) {
 		c.BindJSON(&bin)
 		updater := deta.NewUpdater(bin.Id)
 		updater.Set("name", bin.Name)
-		updater.Set("description", bin.Description)	
+		updater.Set("description", bin.Description)
 		resp := base.Update(updater)
 		c.JSON(resp.StatusCode, resp.JSON())
 
@@ -74,6 +74,12 @@ func bins(c *gin.Context) {
 		var bin Bin
 		c.BindJSON(&bin)
 		resp := base.Delete(bin.Id)
+		q := deta.NewQuery()
+		q.Equals("parent", bin.Id)
+		children := base.FetchUntilEnd(q)
+		for _, child := range children.ArrayJSON() {
+			base.Delete(child["key"].(string))
+		}
 		c.JSON(resp.StatusCode, resp.JSON())
 	}
 }

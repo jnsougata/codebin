@@ -17,7 +17,11 @@ function newBin(data) {
     deleteButton.title = "Delete"
     deleteButton.innerHTML = `<span class="material-symbols-outlined">delete</span>`
     deleteButton.addEventListener("click", () => {
-        // TODO: delete bin
+        fetch(`/api/bins`, {
+            method: "DELETE",
+            body: JSON.stringify({ id: data.id }),
+        })
+            .then(() => { bin.remove() })
     })
     let editButton = document.createElement("button")
     editButton.title = "Edit"
@@ -26,10 +30,11 @@ function newBin(data) {
         // TODO: edit bin
     })
     let shareButton = document.createElement("button")
-    shareButton.title = "Share"
+    shareButton.style.cursor = "copy"
+    shareButton.title = "Copy Share Link"
     shareButton.innerHTML = `<span class="material-symbols-outlined">share</span>`
     shareButton.addEventListener("click", () => {
-        // TODO: share bin
+        navigator.clipboard.writeText(`${window.location.origin}/shared/${data.id}`)
     })
     let openButton = document.createElement("button")
     openButton.title = "Open Editor"

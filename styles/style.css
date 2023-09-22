@@ -130,13 +130,12 @@ header > .box > button > i:hover {
     align-items: center;
     padding: 5px;
     cursor: pointer;
-    background-color: rgba(254, 254, 255, 0.075);
     margin-bottom: 5px;
     padding-left: 10px;
 }
 
 .editor > .sidebar > .item:hover {
-    background-color: rgba(255, 255, 255, 0.212)
+    background-color: rgba(255, 255, 255, 0.075)
 }
 
 .editor > .sidebar > .item > img {
