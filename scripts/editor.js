@@ -129,14 +129,14 @@ let themeCounter = 0
 editorThemeElem.addEventListener("click", function() {
     var themes = ace.require("ace/ext/themelist").themes
     themes.reverse()
-    let th = themes[themeCounter].theme
-    editor.setTheme(th)
     if (themeCounter == themes.length - 1) {
         themeCounter = 0
     } else {
         themeCounter++
     }
-    editorThemeElem.innerHTML = `<i class="fa-solid fa-palette"></i> ${themes[themeCounter].caption}`
+    const theme = themes[themeCounter]
+    editor.setTheme(`ace/theme/${theme.name}`)
+    editorThemeElem.innerHTML = `${theme.caption}`
 })
 
 let saveButton = document.getElementById("save")

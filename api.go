@@ -58,15 +58,19 @@ func bins(c *gin.Context) {
 	case http.MethodPut:
 		var bin map[string]interface{}
 		c.BindJSON(&bin)
-		resp := base.Put(deta.Record{Value: bin})
+		resp := base.Put(deta.Record{Value: bin, Key: bin["id"].(string)})
 		c.JSON(resp.StatusCode, resp.JSON())
 
 	case http.MethodPatch:
 		var bin Bin
 		c.BindJSON(&bin)
 		updater := deta.NewUpdater(bin.Id)
-		updater.Set("name", bin.Name)
-		updater.Set("description", bin.Description)
+		if bin.Name != "" {
+			updater.Set("name", bin.Name)
+		}
+		if bin.Description != "" {
+			updater.Set("description", bin.Description)
+		}
 		resp := base.Update(updater)
 		c.JSON(resp.StatusCode, resp.JSON())
 
