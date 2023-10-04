@@ -76,9 +76,11 @@ function newFile(file) {
     sidebarItem.addEventListener("click", () => {
         if (previouslyClickedItem) {
             previouslyClickedItem.style.backgroundColor = `transparent`;
+            previouslyClickedItem.style.border = `none`;
         }
         previouslyClickedItem = sidebarItem
         previouslyClickedItem.style.backgroundColor = `rgba(255, 255, 255, 0.075)`;
+        previouslyClickedItem.style.border = `1px solid rgba(255, 255, 255, 0.062)`;
         globalContextFile = file
         editor.session.setMode(file.mode)
         updateLangMode(file.mode)
@@ -90,7 +92,6 @@ function newFile(file) {
     let name = document.createElement("p")
     name.innerHTML = file.name
     name.addEventListener("click", (e) => {
-        e.stopPropagation()
         name.contentEditable = true
     })
     name.spellcheck = false
@@ -113,7 +114,7 @@ function newFile(file) {
     })
     let share = document.createElement("i")
     share.className = "material-symbols-outlined"
-    share.innerHTML = "share"
+    share.innerHTML = "link"
     share.addEventListener("click", (e) => {
         e.stopPropagation()
         navigator.clipboard.writeText(`${window.location.origin}file/${file.id}`)

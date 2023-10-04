@@ -1,5 +1,5 @@
 const bins = document.querySelector('#bins');
-const addNew = document.querySelector('#add');
+const add = document.querySelector('#add');
 
 
 function newBin(data) {
@@ -90,7 +90,7 @@ function newBin(data) {
     return bin
 }
 
-addNew.addEventListener('click', () => {
+add.addEventListener('click', () => {
     let bin = { 
         name: "Untitled", 
         description: "No description",

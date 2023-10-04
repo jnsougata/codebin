@@ -110,7 +110,7 @@ header > .box > button > i:hover {
 }
 
 .editor > .sidebar {
-    width: 200px;
+    width: 250px;
     height: 100%;
     display: flex;
     align-items: center;
@@ -126,53 +126,30 @@ header > .box > button > i:hover {
     height: 35px;
     display: flex;
     color: white;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     padding: 5px;
     cursor: pointer;
     margin-bottom: 5px;
-    padding-left: 10px;
-}
-
-.editor > .sidebar > .item:hover {
-    background-color: rgba(255, 255, 255, 0.075)
 }
 
 .editor > .sidebar > .item > img {
     width: 15px;
     height: 15px;
+    margin: 0 5px;
 }
 .editor > .sidebar > .item > p {
-    width: 100px;
+    width: 150px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 12px;
-    cursor: default;
 }
 
 .editor > .sidebar > .item > i {
     font-size: 18px;
     padding: 5px;
     color: rgba(255, 255, 255, 0.342);
-}
-
-
-.editor > .sidebar > .item > input[type="text"] {
-    width: calc(100% - 20px);
-    height: 100%;
-    background-color: transparent;
-    border: none;
-    color: white;
-    font-size: 12px;
-    padding: 0px 1px;
-    border-radius: 5px;
-    margin-left: 3px;
-    outline: none;
-    text-align: left;
-    cursor: text;
-    text-overflow: ellipsis;
-    font-family: 'Prompt', sans-serif;
 }
 
 footer {
