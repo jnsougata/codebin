@@ -1,58 +1,89 @@
 var editor = ace.edit("main")
 editor.setReadOnly(true)
+var modelist = ace.require("ace/ext/modelist");
+const editorModeElem = document.querySelector("#editor-mode")
+const editorThemeElem = document.querySelector("#editor-theme")
 let sidebar = document.querySelector(".sidebar")
-let editorMode = document.querySelector("#editor-mode")
-let previouslyClickedItem = null
+let toast = document.querySelector(".toast")
 const primaryBlue = "#1c4ce4"
+const toastGreen = "#27ab5a"
+const toastRed = "#c32c59"
+const menu = document.querySelector("#menu")
+const visibilty = document.querySelector("#visibility")
+
+
+let sidebarHidden = false
+menu.addEventListener("click", () => {
+    if (sidebarHidden) {
+        sidebar.style.display = "flex"
+        sidebarHidden = false
+    } else {
+        sidebar.style.display = "none"
+        sidebarHidden = true
+    }
+})
 
 editor.setOptions({
     fontSize: "15pt",
     copyWithEmptySelection: true,
+    enableLiveAutocompletion: true,
     showPrintMargin: false,
-})
+});
 editor.setTheme("ace/theme/one_dark");
 
-function resolveIconSource(mode) {
-    let srcName = mode.split("/")[2].toLowerCase()
-    return `/modes/${srcName}.png`
-}
 
-function updateLangMode(mode) {
-    editorMode.innerHTML = `<i class="fa-solid fa-code-commit"></i> ${modeToLabel(mode).toUpperCase()}`;
+window.addEventListener("DOMContentLoaded", async () => {
+    const resp = await fetch(`/api/public/bin/${window.location.pathname.split("/")[2]}`);
+    const data = await resp.json();
+    if (resp.status === 200) {
+        if (!data) return console.error("No data returned from server")
+        data.forEach(file => {
+            let sidebarItem = newFile(file)
+            sidebar.appendChild(sidebarItem)
+        })
+        sidebar.firstElementChild.click()
+    } else {
+        alert(data.error)
+    }
+});
+
+function modeToLabel(mode) {
+    return String(mode).split("/")[2]
 }
 
 function modeToIcon(mode) {
     return `/modes/${mode.toLowerCase()}.png`
 }
 
-function modeToLabel(mode) {
-    return String(mode).split("/")[2]
-}
-
+let nameInputTimer = null;
+let previouslyClickedItem = null;
 function newFile(file) {
     let sidebarItem = document.createElement("div")
     sidebarItem.className = "item"
     sidebarItem.id = `item-${file.id}`;
     sidebarItem.addEventListener("click", () => {
         if (previouslyClickedItem) {
-            previouslyClickedItem.style.border = "none"
+            previouslyClickedItem.style.backgroundColor = `transparent`;
+            previouslyClickedItem.style.border = `none`;
         }
         previouslyClickedItem = sidebarItem
-        previouslyClickedItem.style.backgroundColor = `1px solid rgba(245, 222, 179, 0.095)`
+        previouslyClickedItem.style.backgroundColor = `rgba(255, 255, 255, 0.075)`;
+        previouslyClickedItem.style.border = `1px solid rgba(255, 255, 255, 0.062)`;
         globalContextFile = file
         editor.session.setMode(file.mode)
-        updateLangMode(file.mode)
         editor.setValue(file.value)
+        editorModeElem.innerHTML = `${modeToLabel(file.mode).toUpperCase()}`;
     })
     let icon = document.createElement("img")
     icon.src = modeToIcon(modeToLabel(file.mode))
     let name = document.createElement("p")
     name.innerHTML = file.name
     let share = document.createElement("i")
-    share.className = "fa-solid fa-paper-plane"
+    share.className = "material-symbols-outlined"
+    share.innerHTML = "link"
     share.addEventListener("click", (e) => {
         e.stopPropagation()
-        navigator.clipboard.writeText(`${window.location.origin}/file/${file.id}`)
+        navigator.clipboard.writeText(`${window.location.origin}/shared/${file.id}`)
         showToast("File Link copied to clipboard", toastGreen)
     })
     sidebarItem.appendChild(icon)
@@ -61,64 +92,25 @@ function newFile(file) {
     return sidebarItem
 }
 
-function showCode(code) {
-    fetch(`/api/bins/${code}`)
-    .then((response) => response.json())
-    .then((data) => {
-        if (data.length === 0) {
-            showToast("File not found :(", toastRed)
-            setTimeout(() => {
-                window.location.href = "/"
-            }, 3000)
-            return
-        }
-        data.forEach((info) => {
-            sidebar.appendChild(newFile(info))
-        })
-        sidebar.children[0].click()
-    })
-}
-
-window.onload = () => {
-    let code = window.location.pathname.replace("/", "")
-    let title = document.getElementsByTagName("title")[0]
-    title.innerHTML = `Bin | ${code}`
-    showCode(code)
-    themeButton.innerHTML = "<i class='fas fa-palette'></i> One Dark"
-}
-
-let copyCodeButton = document.getElementById("copy")
-copyCodeButton.addEventListener("click", function() {
-    text = editor.getValue()
-    navigator.clipboard.writeText(text)
-    .then(function() {
-        showToast("Snippet copied to clipboard", toastGreen)
-    })
-})
-
-themeCounter = 0
-let themeButton = document.getElementById("editor-theme")
-themeButton.addEventListener("click", function() {
+let themeCounter = 0
+editorThemeElem.addEventListener("click", function() {
     var themes = ace.require("ace/ext/themelist").themes
     themes.reverse()
-    let th = themes[themeCounter].theme
-    editor.setTheme(th)
     if (themeCounter == themes.length - 1) {
         themeCounter = 0
     } else {
         themeCounter++
     }
-    themeButton.innerHTML = themes[themeCounter].caption
+    const theme = themes[themeCounter]
+    editor.setTheme(`ace/theme/${theme.name}`)
+    editorThemeElem.innerHTML = `${theme.caption}`
 })
 
-let toast = document.querySelector(".toast")
-const toastGreen = "#27ab5a"
-const toastRed = "#c32c59"
 function showToast(innerText, color="#1c4ce4") {
     toast.innerHTML = `<p>${innerText}</p>`
     toast.style.backgroundColor = color
     toast.style.display = "flex"
-    setTimeout(function() {
+    setTimeout(() => {
         toast.style.display = "none"
     }, 3000)
 }

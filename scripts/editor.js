@@ -134,7 +134,7 @@ function newFile(file) {
     share.innerHTML = "link"
     share.addEventListener("click", (e) => {
         e.stopPropagation()
-        navigator.clipboard.writeText(`${window.location.origin}file/${file.id}`)
+        navigator.clipboard.writeText(`${window.location.origin}/shared/${file.id}`)
         showToast("File Link copied to clipboard", toastGreen)
     })
     sidebarItem.appendChild(icon)

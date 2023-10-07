@@ -87,3 +87,38 @@ func bins(c *gin.Context) {
 		c.JSON(resp.StatusCode, resp.JSON())
 	}
 }
+
+func public(c *gin.Context) {
+	id := c.Param("id")
+	query := deta.NewQuery()
+	query.Equals("parent", id)
+	resp := base.FetchUntilEnd(query)
+	records := resp.ArrayJSON()
+	if records == nil {
+		r := base.Get(id)
+		record := r.JSON() 
+		access, ok := record["access"]
+		if ok && access != "public" {
+			c.JSON(403, map[string]interface{}{"error": "Access Denied"})
+		} else {
+			c.JSON(r.StatusCode, []map[string]interface{}{record})
+		}
+		return
+	}
+	publics := []interface{}{}
+	for _, record := range records {
+		record["id"] = record["key"]
+		delete(record, "key")
+		access, ok := record["access"]
+		if ok && access != "public" {
+			continue
+		} else {
+			publics = append(publics, record)
+		}
+	}
+	if len(publics) == 0 {
+		c.JSON(403, map[string]interface{}{"error": "Private Bin or Files"})
+		return
+	}
+	c.JSON(resp.StatusCode, publics)
+}

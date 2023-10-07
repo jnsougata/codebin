@@ -18,8 +18,9 @@ micros:
     run: ./codebin
     dev: go run .
     public_routes:
+      - "/api/public/bin/*"
+      - "/shared/*"
       - "/modes/*"
       - "/assets/*"
-      - "/shared/*"
       - "/styles/*"
       - "/scripts/*"
