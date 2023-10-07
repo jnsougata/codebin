@@ -14,6 +14,8 @@ const primaryBlue = "#1c4ce4"
 const toastGreen = "#27ab5a"
 const toastRed = "#c32c59"
 const menu = document.querySelector("#menu")
+const visibilty = document.querySelector("#visibility")
+
 
 let sidebarHidden = false
 menu.addEventListener("click", () => {
@@ -67,6 +69,17 @@ function modeToIcon(mode) {
     return `/modes/${mode.toLowerCase()}.png`
 }
 
+visibilty.addEventListener("click", () => {
+    if (globalContextFile.access && globalContextFile.access !== "public") {
+        globalContextFile.access = "public";
+        visibilty.innerHTML = "lock_open";
+    } else {
+        globalContextFile.access = "private";
+        visibilty.innerHTML = "lock";
+    }
+    saveButton.click();
+})
+
 let nameInputTimer = null;
 let previouslyClickedItem = null;
 function newFile(file) {
@@ -77,6 +90,11 @@ function newFile(file) {
         if (previouslyClickedItem) {
             previouslyClickedItem.style.backgroundColor = `transparent`;
             previouslyClickedItem.style.border = `none`;
+        }
+        if (file.access && file.access !== "public") {
+            visibilty.innerHTML = "lock";
+        } else {
+            visibilty.innerHTML = "lock_open";
         }
         previouslyClickedItem = sidebarItem
         previouslyClickedItem.style.backgroundColor = `rgba(255, 255, 255, 0.075)`;
@@ -95,7 +113,6 @@ function newFile(file) {
         name.contentEditable = true
     })
     name.spellcheck = false
-    name.style.outline = "none"
     name.addEventListener("input", (ev) => {
         if (nameInputTimer) {
             clearTimeout(nameInputTimer)
